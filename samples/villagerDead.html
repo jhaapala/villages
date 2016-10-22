@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="islands.css">
+    <title>Agda Holst</title>
+</head>
+<body>
+
+
+<style>
+    body {
+        background-color: #c1d1d8
+    }
+
+    div.chatuser {
+        font-weight: bold;
+        font-size: 100%;
+        padding-top: 10px;
+    }
+
+    div.chatbot {
+        font-size: 100%;
+        padding-top: 10px;
+    }
+
+    input {
+        height: 30px;
+        font-size: 100%;
+        margin-top: 10px;
+    }
+
+    td {
+        font-size: 70%;
+    }
+
+    th {
+        font-size: 70%;
+        text-align: left;
+    }
+
+    table {
+        margin-left: 20px;
+        border: solid 1px;
+        margin-bottom: 5px;
+    }
+
+    .diagnostics {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    span.task {
+        cursor: pointer;
+        color: #55c;
+    }
+
+    div.task {
+        margin-left: 60px;
+        margin-bottom: 5px;
+    }
+
+    div.submenu {
+        height: 30px;
+        line-height: 30px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        margin-top: 10px;
+    }
+
+    img.submenu {
+        height: 50px;
+        padding-right: 10px;
+        float: left;
+    }
+
+    img.taskresult {
+        height: 50px;
+        padding-right: 10px;
+        float: left;
+    }
+
+    div.taskresult {
+        margin-bottom: 20px;
+        margin-top: 10px;
+    }
+
+    div.taskresulttd {
+        margin-left: 70px;
+        padding-bottom: 5px;
+    }
+
+    div.taskresulttask {
+        margin-left: 70px;
+        padding-bottom: 5px;
+    }
+
+    div.taskresultresult {
+        font-weight: bold;
+        margin-left: 70px;
+        font-size: 120%;
+    }
+
+    div.taskresultquestion {
+        font-style: italic;
+        margin-left: 70px;
+        font-size: 100%;
+        padding-bottom: 5px;
+    }
+
+    div.taskresultresponse {
+        font-weight: bold;
+        margin-left: 70px;
+        font-size: 100%;
+        padding-bottom: 10px;
+    }
+
+    div.timelineevent {
+        padding: 5px;
+    }
+
+    div.storydate {
+        padding-top: 10px;
+        padding-bottom: 2px;
+        font-size: 100%;
+        font-weight: bold;
+    }
+
+    div.storyevent {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-left: 15px;
+        font-size: 100%;
+    }
+
+    div.storyday {
+        float: left;
+        width: 70px;
+    }
+
+    div.content_tab {
+        display: none;
+        float: left;
+        width: 460px;
+        margin-left: 0px;
+        margin-right: 0px;
+        padding-top: 20px;
+        border: none;
+    }
+
+    #skeleton {
+        border: none;
+    }
+</style>
+
+<script>
+    var pageid = 'islander';
+    var current_tab = '';
+    var task_icon = [];
+    var id = 'u33fmnhctv';
+    var awake = 0;
+    var given = 'Agda';
+    var thechat;
+    var xhr;
+
+    function change_tab(t) {
+        if (t != current_tab) {
+            if (current_tab != '') {
+                document.getElementById(current_tab).style.display = "none";
+                document.getElementById(current_tab + 'tab').className = "lh";
+            }
+            current_tab = t;
+            sessionStorage.setItem(pageid + 'tab', current_tab);
+            document.getElementById(current_tab).style.display = "block";
+            document.getElementById(current_tab + 'tab').className = "lhselected";
+            if ((t == "t5") & (consented) & (awake) & (available)) {
+                document.getElementById('userinput').style.display = 'block';
+                document.getElementById('chatbox').focus();
+            }
+            if ((t == "t3") & (task_icon.length == 0) & (consented == 1)) {
+                document.getElementById('task_menu').style.display = 'block';
+                document.getElementById('detail').style.display = 'none';
+            } else {
+                document.getElementById('task_menu').style.display = 'none';
+                document.getElementById('detail').style.display = 'block';
+            }
+        }
+    }
+
+
+    function dochat() {
+        thechat = document.getElementById("chatbox").value;
+
+        document.body.style.cursor = "wait";
+
+        var x = document.createElement("div");
+        x.innerHTML = thechat;
+        x.className = "chatuser";
+        document.getElementById("conversation").appendChild(x);
+
+        document.getElementById("chatbox").value = "";
+
+        var url = "alice.php?3cubjjszblekarhw6wrm&" + thechat;
+
+        if (window.XMLHttpRequest) {
+            xhr = new XMLHttpRequest();
+        }
+        else {
+            if (window.ActiveXObject) {
+                try {
+                    xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                catch (e) {
+                }
+            }
+        }
+
+        if (xhr) {
+            xhr.onreadystatechange = showAction;
+            xhr.open("GET", url, true);
+            xhr.send(null);
+        }
+        else {
+            alert("Sorry, but I couldn't create an XMLHttpRequest");
+        }
+    }
+
+    function showAction() {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                var x = document.createElement("div");
+                var lines = xhr.responseText.split("\n");
+                if (lines[0] == "login") {
+                    window.location = "login.php";
+                }
+                var redraw = false;
+                var response = "";
+                for (var j = 0; j < lines.length; j++) {
+                    if (lines[j].substr(0, 1) == "<") {
+                        response = response + lines[j] + "\n";
+                    } else {
+                        var bits = lines[j].split('=');
+                        if (bits.length == 2) {
+                            islander[bits[0]] = bits[1];
+                            redraw = true;
+                        } else {
+                            response = response + lines[j] + "\n";
+                        }
+                    }
+                }
+                x.innerHTML = response;
+                x.className = "chatbot";
+                document.getElementById("conversation").appendChild(x);
+                document.getElementById('chatbox').focus();
+                if (redraw) {
+                    drawSkeleton();
+                }
+            }
+            document.body.style.cursor = "default";
+        }
+    }
+
+    var xhr_contact;
+
+    function addContact() {
+        document.body.style.cursor = "wait";
+
+        var url = "php/contact.php?id=" + id;
+
+        xhr_contact = new XMLHttpRequest();
+        if (xhr_contact) {
+            xhr_contact.onreadystatechange = showContact;
+            xhr_contact.open("GET", url, true);
+            xhr_contact.send(null);
+        }
+    }
+
+    function showContact() {
+        if (xhr_contact.readyState == 4) {
+            if (xhr_contact.status == 200) {
+                if (xhr_contact.responseText == "added") {
+                    document.getElementById("contact").innerHTML = 'Remove ' + given;
+                } else {
+                    document.getElementById("contact").innerHTML = 'Add ' + given;
+                }
+            }
+
+            document.body.style.cursor = "default";
+        }
+    }
+
+    function drawGenes(g, aid, colours) {
+        var gCanvas = document.getElementById('genes' + aid);
+        var gCtx = gCanvas.getContext('2d');
+
+        var k = 0;
+        var h;
+        for (var y = 0; y < 16; y++) {
+            for (var x = 0; x < 16; x++) {
+                h = colours[k];
+                if (g < 2) {
+                    gCtx.fillStyle = "rgb(" + h + "," + h + "," + h + ")";
+                }
+                else {
+                    h = h / 360;
+                    gCtx.fillStyle = "hsl(" + Math.round(120 * (1 - h)) + ",100%," + (100 * Math.abs(h - 0.5)) + "%)";
+                } // "hsl("+h+",100%,50%)";
+                gCtx.fillRect(16 * x, 16 * y, 15, 15);
+                k += 1;
+            }
+        }
+    }
+</script>
+
+<div id="banner">
+    <div id="menubar">
+        <div id="breadcrumbs"><a href="index.php" class="menu">Islands</a> &raquo; <a class="menu"
+                                                                                      href="village.php?Vardo">Vardo</a> &raquo;
+            Agda Holst
+        </div>
+        <div id="menu"><a href="project.php" class="menu">Contacts</a> &nbsp; &nbsp; <a href="logout.php" class="menu">Logout</a>
+        </div>
+    </div>
+    <div id="title">Agda Holst</div>
+</div>
+
+
+<div id="content">
+
+    <div id="tabmenu" style="width: 650px">
+        <button class="lh" id="t1tab" onclick="change_tab('t1')">About</button>
+        <button class="lh" id="t2tab" onclick="change_tab('t2')">Story</button>
+        <button class="lh" id="t3tab" onclick="change_tab('t3')">Tasks</button>
+        <button class="lh" id="t4tab" onclick="change_tab('t4')">History</button>
+        <button class="lh" id="t5tab" onclick="change_tab('t5')">Interview</button>
+    </div>
+
+    <div id="displayed" style="width: 720px; margin-left: auto; margin-right: auto;">
+
+
+        <div id="t1" class="content_tab">
+            <div class="storydate">Summary</div>
+            <div class="storyevent">Female</div>
+            <div class="storyevent">115 years old</div>
+            <div class="storyevent">Died in Year 117</div>
+
+            <div class="storydate">Parents</div>
+            <div class="storyevent">
+                <a href="islander.php?id=ptaqpdnc7c">Anika Svendsen</a>
+            </div>
+            <div class="storyevent">
+                <a href="islander.php?id=x9yhzurnja">Marcel Holst</a>
+            </div>
+
+            <div class="storydate">Children</div>
+            <div class="storyevent">
+                <a href="islander.php?id=teqhlj5scz">Elena Holst</a>
+            </div>
+            <div class="storyevent">
+                <a href="islander.php?id=9ctfjuke4s">Ole Holst</a>
+            </div>
+
+            <div class="storydate">Contacts</div>
+
+            <div class="storyevent" id="contact" onclick="addContact();" style="cursor: pointer; color: #55c;">Add
+                Agda
+            </div>
+
+
+        </div>
+
+        <div id="t2" class="content_tab">
+
+            <div class="timelineevent">
+                <div class="storydate">Age 0</div>
+                <div class="storyevent">
+                    <div class="storyday">04/002</div>
+                    Born in Hofn 30
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 3</div>
+                <div class="storyevent">
+                    <div class="storyday">24/005</div>
+                    Friends with <a href="islander.php?id=dmp2hccsfg">Sorena Pallesen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 5</div>
+                <div class="storyevent">
+                    <div class="storyday">15/007</div>
+                    Hofn Elementary School
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 6</div>
+                <div class="storyevent">
+                    <div class="storyday">24/008</div>
+                    Mother died
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 7</div>
+                <div class="storyevent">
+                    <div class="storyday">01/010</div>
+                    No longer friends with <a href="islander.php?id=dmp2hccsfg">Sorena Pallesen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 8</div>
+                <div class="storyevent">
+                    <div class="storyday">09/010</div>
+                    Friends with <a href="islander.php?id=dmp2hccsfg">Sorena Pallesen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 9</div>
+                <div class="storyevent">
+                    <div class="storyday">04/011</div>
+                    No longer friends with <a href="islander.php?id=dmp2hccsfg">Sorena Pallesen</a></div>
+                <div class="storyevent">
+                    <div class="storyday">18/011</div>
+                    Friends with <a href="islander.php?id=dmp2hccsfg">Sorena Pallesen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 11</div>
+                <div class="storyevent">
+                    <div class="storyday">15/013</div>
+                    Father died
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">15/013</div>
+                    Adopted by <a href="islander.php?id=57dv4c63al">Matthias Karlsen</a></div>
+                <div class="storyevent">
+                    <div class="storyday">15/013</div>
+                    Moved to Hofn 21
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 12</div>
+                <div class="storyevent">
+                    <div class="storyday">08/014</div>
+                    Graduated from Hofn Elementary School
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">15/014</div>
+                    Hofn High School
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 14</div>
+                <div class="storyevent">
+                    <div class="storyday">04/016</div>
+                    Waiter
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">06/016</div>
+                    Friends with <a href="islander.php?id=6abgw8wbdp">Viktoria Solberg</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 15</div>
+                <div class="storyevent">
+                    <div class="storyday">11/017</div>
+                    Friends with <a href="islander.php?id=ptx3swqrz9">Tindra Blomgren</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 16</div>
+                <div class="storyevent">
+                    <div class="storyday">25/018</div>
+                    Friends with <a href="islander.php?id=qw8bhaemaf">Agda Larsen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 18</div>
+                <div class="storyevent">
+                    <div class="storyday">08/020</div>
+                    Graduated from Hofn High School
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 19</div>
+                <div class="storyevent">
+                    <div class="storyday">17/021</div>
+                    Left home
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">17/021</div>
+                    Moved to Vardo 1
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">17/021</div>
+                    Baker
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 20</div>
+                <div class="storyevent">
+                    <div class="storyday">12/022</div>
+                    No longer friends with <a href="islander.php?id=qw8bhaemaf">Agda Larsen</a></div>
+                <div class="storyevent">
+                    <div class="storyday">18/022</div>
+                    No longer friends with <a href="islander.php?id=dmp2hccsfg">Sorena Pallesen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 23</div>
+                <div class="storyevent">
+                    <div class="storyday">05/025</div>
+                    Friends with <a href="islander.php?id=s4trxzqcur">Tobias Sorensen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 26</div>
+                <div class="storyevent">
+                    <div class="storyday">10/028</div>
+                    Friends with <a href="islander.php?id=82wpvb7zkj">Tindra Lund</a></div>
+                <div class="storyevent">
+                    <div class="storyday">12/028</div>
+                    Friends with <a href="islander.php?id=vad8er34e4">Halden Clausen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 28</div>
+                <div class="storyevent">
+                    <div class="storyday">07/030</div>
+                    No longer friends with <a href="islander.php?id=vad8er34e4">Halden Clausen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 30</div>
+                <div class="storyevent">
+                    <div class="storyday">09/032</div>
+                    Friends with <a href="islander.php?id=vad8er34e4">Halden Clausen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 31</div>
+                <div class="storyevent">
+                    <div class="storyday">24/033</div>
+                    Light smoker
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 32</div>
+                <div class="storyevent">
+                    <div class="storyday">07/034</div>
+                    Pregnant
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">01/035</div>
+                    <a href="islander.php?id=teqhlj5scz">Elena Holst</a> born
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 33</div>
+                <div class="storyevent">
+                    <div class="storyday">09/035</div>
+                    Pregnant
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">03/036</div>
+                    <a href="islander.php?id=9ctfjuke4s">Ole Holst</a> born
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 34</div>
+                <div class="storyevent">
+                    <div class="storyday">04/036</div>
+                    No longer friends with <a href="islander.php?id=vad8er34e4">Halden Clausen</a></div>
+                <div class="storyevent">
+                    <div class="storyday">15/036</div>
+                    Moved to Hofn 7
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">15/036</div>
+                    University of Hofn
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">15/036</div>
+                    Baker
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">16/036</div>
+                    Friends with <a href="islander.php?id=k45757p4ua">Signe Madsen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 35</div>
+                <div class="storyevent">
+                    <div class="storyday">08/037</div>
+                    Unemployed
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">08/037</div>
+                    Elementary School Teacher
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">11/037</div>
+                    Nonsmoker
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 38</div>
+                <div class="storyevent">
+                    <div class="storyday">08/040</div>
+                    Graduated from Hofn University
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">08/040</div>
+                    Moved to Vardo 6
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">08/040</div>
+                    Wheat Farmer
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 40</div>
+                <div class="storyevent">
+                    <div class="storyday">09/042</div>
+                    Friends with <a href="islander.php?id=vad8er34e4">Halden Clausen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 42</div>
+                <div class="storyevent">
+                    <div class="storyday">11/044</div>
+                    Friends with <a href="islander.php?id=l7eeujcy4g">Gerik Falk</a></div>
+                <div class="storyevent">
+                    <div class="storyday">21/044</div>
+                    No longer friends with <a href="islander.php?id=vad8er34e4">Halden Clausen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 45</div>
+                <div class="storyevent">
+                    <div class="storyday">06/047</div>
+                    No longer friends with <a href="islander.php?id=l7eeujcy4g">Gerik Falk</a></div>
+                <div class="storyevent">
+                    <div class="storyday">07/047</div>
+                    Friends with <a href="islander.php?id=vad8er34e4">Halden Clausen</a></div>
+                <div class="storyevent">
+                    <div class="storyday">12/047</div>
+                    No longer friends with <a href="islander.php?id=vad8er34e4">Halden Clausen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 47</div>
+                <div class="storyevent">
+                    <div class="storyday">08/049</div>
+                    Friends with <a href="islander.php?id=l7eeujcy4g">Gerik Falk</a></div>
+                <div class="storyevent">
+                    <div class="storyday">14/049</div>
+                    No longer friends with <a href="islander.php?id=l7eeujcy4g">Gerik Falk</a></div>
+                <div class="storyevent">
+                    <div class="storyday">16/049</div>
+                    Friends with <a href="islander.php?id=l7eeujcy4g">Gerik Falk</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 49</div>
+                <div class="storyevent">
+                    <div class="storyday">01/052</div>
+                    Friends with <a href="islander.php?id=vad8er34e4">Halden Clausen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 51</div>
+                <div class="storyevent">
+                    <div class="storyday">22/053</div>
+                    Dating <a href="islander.php?id=vad8er34e4">Halden Clausen</a></div>
+                <div class="storyevent">
+                    <div class="storyday">25/053</div>
+                    Single
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">25/053</div>
+                    No longer friends with <a href="islander.php?id=vad8er34e4">Halden Clausen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 53</div>
+                <div class="storyevent">
+                    <div class="storyday">07/055</div>
+                    Friends with <a href="islander.php?id=vad8er34e4">Halden Clausen</a></div>
+                <div class="storyevent">
+                    <div class="storyday">16/055</div>
+                    Dating <a href="islander.php?id=vad8er34e4">Halden Clausen</a></div>
+                <div class="storyevent">
+                    <div class="storyday">25/055</div>
+                    Single
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 54</div>
+                <div class="storyevent">
+                    <div class="storyday">05/056</div>
+                    Dating <a href="islander.php?id=vad8er34e4">Halden Clausen</a></div>
+                <div class="storyevent">
+                    <div class="storyday">11/056</div>
+                    Engaged <a href="islander.php?id=vad8er34e4">Halden Clausen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 55</div>
+                <div class="storyevent">
+                    <div class="storyday">08/057</div>
+                    Married <a href="islander.php?id=vad8er34e4">Halden Clausen</a></div>
+                <div class="storyevent">
+                    <div class="storyday">08/057</div>
+                    Moved to Vardo 2 with <a href="islander.php?id=vad8er34e4">Halden Clausen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 57</div>
+                <div class="storyevent">
+                    <div class="storyday">23/059</div>
+                    Light smoker
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 58</div>
+                <div class="storyevent">
+                    <div class="storyday">22/060</div>
+                    No longer friends with <a href="islander.php?id=s4trxzqcur">Tobias Sorensen</a></div>
+                <div class="storyevent">
+                    <div class="storyday">24/060</div>
+                    Moderate smoker
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">03/061</div>
+                    Friends with <a href="islander.php?id=s4trxzqcur">Tobias Sorensen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 59</div>
+                <div class="storyevent">
+                    <div class="storyday">24/061</div>
+                    Retired
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 62</div>
+                <div class="storyevent">
+                    <div class="storyday">10/064</div>
+                    Heavy smoker
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 64</div>
+                <div class="storyevent">
+                    <div class="storyday">27/066</div>
+                    No longer friends with <a href="islander.php?id=s4trxzqcur">Tobias Sorensen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 65</div>
+                <div class="storyevent">
+                    <div class="storyday">13/067</div>
+                    Friends with <a href="islander.php?id=s4trxzqcur">Tobias Sorensen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 66</div>
+                <div class="storyevent">
+                    <div class="storyday">08/068</div>
+                    No longer friends with <a href="islander.php?id=6abgw8wbdp">Viktoria Solberg</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 67</div>
+                <div class="storyevent">
+                    <div class="storyday">08/069</div>
+                    No longer friends with <a href="islander.php?id=l7eeujcy4g">Gerik Falk</a></div>
+                <div class="storyevent">
+                    <div class="storyday">14/069</div>
+                    Friends with <a href="islander.php?id=l7eeujcy4g">Gerik Falk</a></div>
+                <div class="storyevent">
+                    <div class="storyday">28/069</div>
+                    Friends with <a href="islander.php?id=6abgw8wbdp">Viktoria Solberg</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 70</div>
+                <div class="storyevent">
+                    <div class="storyday">05/072</div>
+                    Widowed
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">11/072</div>
+                    No longer friends with <a href="islander.php?id=s4trxzqcur">Tobias Sorensen</a></div>
+                <div class="storyevent">
+                    <div class="storyday">18/072</div>
+                    Dating <a href="islander.php?id=l7eeujcy4g">Gerik Falk</a></div>
+                <div class="storyevent">
+                    <div class="storyday">21/072</div>
+                    Moderate smoker
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">25/072</div>
+                    Engaged <a href="islander.php?id=l7eeujcy4g">Gerik Falk</a></div>
+                <div class="storyevent">
+                    <div class="storyday">02/073</div>
+                    Friends with <a href="islander.php?id=s4trxzqcur">Tobias Sorensen</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 71</div>
+                <div class="storyevent">
+                    <div class="storyday">21/073</div>
+                    Married <a href="islander.php?id=l7eeujcy4g">Gerik Falk</a></div>
+                <div class="storyevent">
+                    <div class="storyday">21/073</div>
+                    Moved to Vardo 4 with <a href="islander.php?id=l7eeujcy4g">Gerik Falk</a></div>
+                <div class="storyevent">
+                    <div class="storyday">01/074</div>
+                    Light smoker
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 72</div>
+                <div class="storyevent">
+                    <div class="storyday">21/074</div>
+                    Nonsmoker
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 81</div>
+                <div class="storyevent">
+                    <div class="storyday">05/083</div>
+                    Adopted <a href="islander.php?id=zb26dt8uhp">Olson Bager</a></div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 87</div>
+                <div class="storyevent">
+                    <div class="storyday">26/089</div>
+                    Widowed
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 97</div>
+                <div class="storyevent">
+                    <div class="storyday">07/099</div>
+                    Light smoker
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">17/099</div>
+                    Nonsmoker
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 108</div>
+                <div class="storyevent">
+                    <div class="storyday">10/110</div>
+                    Light smoker
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 110</div>
+                <div class="storyevent">
+                    <div class="storyday">21/112</div>
+                    Nonsmoker
+                </div>
+            </div>
+            <div class="timelineevent">
+                <div class="storydate">Age 115</div>
+                <div class="storyevent">
+                    <div class="storyday">11/117</div>
+                    Skin cancer
+                </div>
+                <div class="storyevent">
+                    <div class="storyday">20/117</div>
+                    Died from skin cancer
+                </div>
+            </div>
+        </div>
+
+        <div id="t3" class="content_tab">
+            <script>
+                var now = new Date();
+                var delta = now.getTime() - 1477171231827.3;
+                var progress = [];
+                var consented = 0;
+                function getConsent() {
+                    var url = "php/consent.php?id=u33fmnhctv";
+                    xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState == 4 && xhr.status == 200) {
+                            var consentOutcome = xhr.responseText.split(";");
+                            if (consentOutcome[0] == "accept") {
+                                document.getElementById('detail').style.display = "none";
+                                document.getElementById('task_menu').style.display = "block";
+                                if (awake) {
+                                    document.getElementById('idetail').style.display = "none";
+                                    document.getElementById('userinput').style.display = "block";
+                                }
+                                document.getElementById("contact").innerHTML = 'Remove ' + given;
+                                consented = 1;
+                            } else {
+                                document.getElementById("detail").innerHTML = consentOutcome[1];
+                                document.getElementById("idetail").innerHTML = consentOutcome[1];
+                            }
+                        }
+                    }
+                    xhr.open("GET", url, true);
+                    xhr.send(null);
+                }
+
+                function startTask(c) {
+                    document.body.style.cursor = "wait";
+
+                    var url = "task.php?id=u33fmnhctv&code=" + c;
+                    document.getElementById('task_menu').style.display = "none";
+                    document.getElementById('idetail').innerHTML = given + " is unable to chat.";
+                    document.getElementById('idetail').style.display = 'block';
+                    document.getElementById('userinput').style.display = 'none';
+                    available = 0;
+                    window.scrollTo(0, 0);
+                    xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = showTask;
+                    xhr.open("GET", url, true);
+                    xhr.send(null);
+                }
+
+                function showTask() {
+                    if (xhr.readyState == 4) {
+                        if (xhr.status == 200) {
+                            var bits = xhr.responseText.split(",");
+                            if (bits.length == 5) {
+                                progress = [parseFloat(bits[0]) + delta, parseFloat(bits[1]) + 500 + delta];
+                                document.getElementById("detail").innerHTML = islander['name'] + ' is currently ' + bits[4] + '...';
+                                document.getElementById('detail').style.display = 'block';
+                                task_icon = [bits[2], parseInt(bits[3])];
+                                showProgress();
+                            } else {
+                                document.getElementById("detail").innerHTML = 'Error: ' + bits[0];
+                                document.getElementById('task_menu').style.display = "block";
+                            }
+                        }
+                        document.body.style.cursor = "default";
+                    }
+                }
+            </script>
+
+            <p id="detail"><a href="javascript:getConsent('u33fmnhctv')">Obtain consent from Agda's ghost</a></p>
+            <div id="task_menu" style="display: none">
+                <div class="submenu"><img class="submenu" src="images/icons/blood.png"/>Blood Tests</div>
+                <div class="task"><span class="task" onclick="startTask('bloodtype'); return false;">Blood Type</span>
+                </div>
+                <div class="task"><span class="task" onclick="startTask('genes1'); return false;">Gene Array (Chromosome A)</span>
+                </div>
+                <div class="task"><span class="task" onclick="startTask('genes2'); return false;">Gene Array (Chromosome B)</span>
+                </div>
+                <div class="task"><span class="task"
+                                        onclick="startTask('genes3'); return false;">Gene Array (Combined)</span></div>
+                <div class="submenu"><img class="submenu" src="images/icons/physiology.png"/>Physiology</div>
+                <div class="task"><span class="task" onclick="startTask('height'); return false;">Height</span></div>
+            </div>
+
+        </div>
+
+
+        <div id="t4" class="content_tab">
+
+            <p>Agda has not completed any tasks.</p>
+
+        </div>
+
+
+        <div id="t5" class="content_tab">
+
+            <div id="conversation">
+            </div>
+
+            <div id="userinput" style="display: none">
+                <input type="text" id="chatbox" autofocus="autofocus" autocomplete="off" size="40" maxlength="120"
+                       onkeydown="if (event.keyCode == 13) dochat();"/>
+                <button type="submit" style="display: block; margin-top: 10px;" onclick="dochat();">Chat</button>
+            </div>
+
+            <p id="idetail">Agda is unable to chat.</p>
+
+        </div>
+
+        <div id="islander" style="width: 240px; float: right;">
+            <canvas id="skeleton" width="240px" height="800px" style=""></canvas>
+            <canvas id="progress" width="50px" height="100px" style="position: relative; top: -760px;"></canvas>
+
+
+            <p id="about"></p>
+        </div>
+
+
+    </div>
+
+</div>
+<script src="js/splines.js"></script>
+<script src="js/boney-data.js"></script>
+<script src="js/boney.js"></script>
+<script src="js/progress.js"></script>
+<script>
+    var available = 1;
+    if (typeof(Storage) == "undefined") {
+        change_tab('t1');
+    } else if (sessionStorage.getItem(pageid + 'tab') == null) {
+        change_tab('t1');
+    } else {
+        change_tab(sessionStorage.getItem(pageid + 'tab'));
+    }
+
+    var islander = {
+        'blink': 'FE2B',
+        'skincolour': '#E9CABE',
+        'head': 'H4F',
+        'hair': 'FH9',
+        'eyecolour': '#597EBC',
+        'hr': '0.500',
+        'top': ['GF', 'GFH', 0.33333333333333326],
+        'eyes': 'FE2',
+        'sad': 'M2S',
+        'topcolour': '#eeeeee',
+        'nose': 'FN1',
+        'skin': ['F', 'FH', 0.33333333333333326],
+        'haircolour': '#888888',
+        'happy': 'M2',
+        'brows': 'EB2',
+        'pixels': 450.0,
+        'ears': 'Ears1'
+    };
+    islander['id'] = 'u33fmnhctv';
+    islander['name'] = 'Agda';
+    islander['sex'] = 'Female';
+    islander['alive'] = 0;
+    islander['mood'] = 'sad';
+    islander['asleep'] = '';
+    boney['H'].angle = 0;
+    drawSkeleton();
+
+</script>
+</body>
