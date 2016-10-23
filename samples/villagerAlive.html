@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="islands.css">
+    <title>Lena Sorensen</title>
+</head>
+<body>
+
+
+<style>
+    body {
+        background-color: #c1d1d8
+    }
+
+    div.chatuser {
+        font-weight: bold;
+        font-size: 100%;
+        padding-top: 10px;
+    }
+
+    div.chatbot {
+        font-size: 100%;
+        padding-top: 10px;
+    }
+
+    input {
+        height: 30px;
+        font-size: 100%;
+        margin-top: 10px;
+    }
+
+    td {
+        font-size: 70%;
+    }
+
+    th {
+        font-size: 70%;
+        text-align: left;
+    }
+
+    table {
+        margin-left: 20px;
+        border: solid 1px;
+        margin-bottom: 5px;
+    }
+
+    .diagnostics {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    span.task {
+        cursor: pointer;
+        color: #55c;
+    }
+
+    div.task {
+        margin-left: 60px;
+        margin-bottom: 5px;
+    }
+
+    div.submenu {
+        height: 30px;
+        line-height: 30px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        margin-top: 10px;
+    }
+
+    img.submenu {
+        height: 50px;
+        padding-right: 10px;
+        float: left;
+    }
+
+    img.taskresult {
+        height: 50px;
+        padding-right: 10px;
+        float: left;
+    }
+
+    div.taskresult {
+        margin-bottom: 20px;
+        margin-top: 10px;
+    }
+
+    div.taskresulttd {
+        margin-left: 70px;
+        padding-bottom: 5px;
+    }
+
+    div.taskresulttask {
+        margin-left: 70px;
+        padding-bottom: 5px;
+    }
+
+    div.taskresultresult {
+        font-weight: bold;
+        margin-left: 70px;
+        font-size: 120%;
+    }
+
+    div.taskresultquestion {
+        font-style: italic;
+        margin-left: 70px;
+        font-size: 100%;
+        padding-bottom: 5px;
+    }
+
+    div.taskresultresponse {
+        font-weight: bold;
+        margin-left: 70px;
+        font-size: 100%;
+        padding-bottom: 10px;
+    }
+
+    div.timelineevent {
+        padding: 5px;
+    }
+
+    div.storydate {
+        padding-top: 10px;
+        padding-bottom: 2px;
+        font-size: 100%;
+        font-weight: bold;
+    }
+
+    div.storyevent {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-left: 15px;
+        font-size: 100%;
+    }
+
+    div.storyday {
+        float: left;
+        width: 70px;
+    }
+
+    div.content_tab {
+        display: none;
+        float: left;
+        width: 460px;
+        margin-left: 0px;
+        margin-right: 0px;
+        padding-top: 20px;
+        border: none;
+    }
+
+    #skeleton {
+        border: none;
+    }
+</style>
+
+<script>
+    var pageid = 'islander';
+    var current_tab = '';
+    var task_icon = [];
+    var id = '6bq82utc3d';
+    var awake = 0;
+    var given = 'Lena';
+    var thechat;
+    var xhr;
+
+    function change_tab(t) {
+        if (t != current_tab) {
+            if (current_tab != '') {
+                document.getElementById(current_tab).style.display = "none";
+                document.getElementById(current_tab + 'tab').className = "lh";
+            }
+            current_tab = t;
+            sessionStorage.setItem(pageid + 'tab', current_tab);
+            document.getElementById(current_tab).style.display = "block";
+            document.getElementById(current_tab + 'tab').className = "lhselected";
+            if ((t == "t5") & (consented) & (awake) & (available)) {
+                document.getElementById('userinput').style.display = 'block';
+                document.getElementById('chatbox').focus();
+            }
+            if ((t == "t3") & (task_icon.length == 0) & (consented == 1)) {
+                document.getElementById('task_menu').style.display = 'block';
+                document.getElementById('detail').style.display = 'none';
+            } else {
+                document.getElementById('task_menu').style.display = 'none';
+                document.getElementById('detail').style.display = 'block';
+            }
+        }
+    }
+
+
+    function dochat() {
+        thechat = document.getElementById("chatbox").value;
+
+        document.body.style.cursor = "wait";
+
+        var x = document.createElement("div");
+        x.innerHTML = thechat;
+        x.className = "chatuser";
+        document.getElementById("conversation").appendChild(x);
+
+        document.getElementById("chatbox").value = "";
+
+        var url = "alice.php?p7aezdk467fgujetryj5&" + thechat;
+
+        if (window.XMLHttpRequest) {
+            xhr = new XMLHttpRequest();
+        }
+        else {
+            if (window.ActiveXObject) {
+                try {
+                    xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                catch (e) {
+                }
+            }
+        }
+
+        if (xhr) {
+            xhr.onreadystatechange = showAction;
+            xhr.open("GET", url, true);
+            xhr.send(null);
+        }
+        else {
+            alert("Sorry, but I couldn't create an XMLHttpRequest");
+        }
+    }
+
+    function showAction() {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                var x = document.createElement("div");
+                var lines = xhr.responseText.split("\n");
+                if (lines[0] == "login") {
+                    window.location = "login.php";
+                }
+                var redraw = false;
+                var response = "";
+                for (var j = 0; j < lines.length; j++) {
+                    if (lines[j].substr(0, 1) == "<") {
+                        response = response + lines[j] + "\n";
+                    } else {
+                        var bits = lines[j].split('=');
+                        if (bits.length == 2) {
+                            islander[bits[0]] = bits[1];
+                            redraw = true;
+                        } else {
+                            response = response + lines[j] + "\n";
+                        }
+                    }
+                }
+                x.innerHTML = response;
+                x.className = "chatbot";
+                document.getElementById("conversation").appendChild(x);
+                document.getElementById('chatbox').focus();
+                if (redraw) {
+                    drawSkeleton();
+                }
+            }
+            document.body.style.cursor = "default";
+        }
+    }
+
+    var xhr_contact;
+
+    function addContact() {
+        document.body.style.cursor = "wait";
+
+        var url = "php/contact.php?id=" + id;
+
+        xhr_contact = new XMLHttpRequest();
+        if (xhr_contact) {
+            xhr_contact.onreadystatechange = showContact;
+            xhr_contact.open("GET", url, true);
+            xhr_contact.send(null);
+        }
+    }
+
+    function showContact() {
+        if (xhr_contact.readyState == 4) {
+            if (xhr_contact.status == 200) {
+                if (xhr_contact.responseText == "added") {
+                    document.getElementById("contact").innerHTML = 'Remove ' + given;
+                } else {
+                    document.getElementById("contact").innerHTML = 'Add ' + given;
+                }
+            }
+
+            document.body.style.cursor = "default";
+        }
+    }
+
+    function drawGenes(g, aid, colours) {
+        var gCanvas = document.getElementById('genes' + aid);
+        var gCtx = gCanvas.getContext('2d');
+
+        var k = 0;
+        var h;
+        for (var y = 0; y < 16; y++) {
+            for (var x = 0; x < 16; x++) {
+                h = colours[k];
+                if (g < 2) {
+                    gCtx.fillStyle = "rgb(" + h + "," + h + "," + h + ")";
+                }
+                else {
+                    h = h / 360;
+                    gCtx.fillStyle = "hsl(" + Math.round(120 * (1 - h)) + ",100%," + (100 * Math.abs(h - 0.5)) + "%)";
+                } // "hsl("+h+",100%,50%)";
+                gCtx.fillRect(16 * x, 16 * y, 15, 15);
+                k += 1;
+            }
+        }
+    }
+</script>
+
+<div id="banner">
+    <div id="menubar">
+        <div id="breadcrumbs"><a href="index.php" class="menu">Islands</a> &raquo; <a class="menu"
+                                                                                      href="village.php?Hofn">Hofn</a> &raquo;
+            Lena Sorensen
+        </div>
+        <div id="menu"><a href="project.php" class="menu">Contacts</a> &nbsp; &nbsp; <a href="logout.php" class="menu">Logout</a>
+        </div>
+    </div>
+    <div id="title">Lena Sorensen</div>
+</div>
+
+
+<div id="content">
+
+    <div id="tabmenu" style="width: 650px">
+        <button class="lh" id="t1tab" onclick="change_tab('t1')">About</button>
+        <button class="lh" id="t2tab" onclick="change_tab('t2')">Story</button>
+        <button class="lh" id="t3tab" onclick="change_tab('t3')">Tasks</button>
+        <button class="lh" id="t4tab" onclick="change_tab('t4')">History</button>
+        <button class="lh" id="t5tab" onclick="change_tab('t5')">Interview</button>
+    </div>
+
+    <div id="displayed" style="width: 720px; margin-left: auto; margin-right: auto;">
+
+
+        <div id="t1" class="content_tab">
+            <div class="storydate">Summary</div>
+            <div class="storyevent">Female</div>
+            <div class="storyevent">0 years old</div>
+            <div class="storyevent">Lives in Hofn 165</div>
+
+            <div class="storydate">Parents</div>
+            <div class="storyevent">
+                <a href="islander.php?id=6wprv5zb5k">Helga Sorensen</a>
+            </div>
+            <div class="storyevent">
+                <a href="islander.php?id=amudpx7txd">Erling Sorensen</a>
+            </div>
+
+
+            <div class="storydate">Contacts</div>
+
+            <div class="storyevent" id="contact" onclick="addContact();" style="cursor: pointer; color: #55c;">Add
+                Lena
+            </div>
+
+
+        </div>
+
+        <div id="t2" class="content_tab">
+
+            <div class="timelineevent">
+                <div class="storydate">Age 0</div>
+                <div class="storyevent">
+                    <div class="storyday">13/254</div>
+                    Born in Hofn 165
+                </div>
+            </div>
+        </div>
+
+        <div id="t3" class="content_tab">
+            <script>
+                var now = new Date();
+                var delta = now.getTime() - 1477171829320;
+                var progress = [];
+                var consented = 0;
+                function getConsent() {
+                    var url = "php/consent.php?id=6bq82utc3d";
+                    xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState == 4 && xhr.status == 200) {
+                            var consentOutcome = xhr.responseText.split(";");
+                            if (consentOutcome[0] == "accept") {
+                                document.getElementById('detail').style.display = "none";
+                                document.getElementById('task_menu').style.display = "block";
+                                if (awake) {
+                                    document.getElementById('idetail').style.display = "none";
+                                    document.getElementById('userinput').style.display = "block";
+                                }
+                                document.getElementById("contact").innerHTML = 'Remove ' + given;
+                                consented = 1;
+                            } else {
+                                document.getElementById("detail").innerHTML = consentOutcome[1];
+                                document.getElementById("idetail").innerHTML = consentOutcome[1];
+                            }
+                        }
+                    }
+                    xhr.open("GET", url, true);
+                    xhr.send(null);
+                }
+
+                function startTask(c) {
+                    document.body.style.cursor = "wait";
+
+                    var url = "task.php?id=6bq82utc3d&code=" + c;
+                    document.getElementById('task_menu').style.display = "none";
+                    document.getElementById('idetail').innerHTML = given + " is unable to chat.";
+                    document.getElementById('idetail').style.display = 'block';
+                    document.getElementById('userinput').style.display = 'none';
+                    available = 0;
+                    window.scrollTo(0, 0);
+                    xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = showTask;
+                    xhr.open("GET", url, true);
+                    xhr.send(null);
+                }
+
+                function showTask() {
+                    if (xhr.readyState == 4) {
+                        if (xhr.status == 200) {
+                            var bits = xhr.responseText.split(",");
+                            if (bits.length == 5) {
+                                progress = [parseFloat(bits[0]) + delta, parseFloat(bits[1]) + 500 + delta];
+                                document.getElementById("detail").innerHTML = islander['name'] + ' is currently ' + bits[4] + '...';
+                                document.getElementById('detail').style.display = 'block';
+                                task_icon = [bits[2], parseInt(bits[3])];
+                                showProgress();
+                            } else {
+                                document.getElementById("detail").innerHTML = 'Error: ' + bits[0];
+                                document.getElementById('task_menu').style.display = "block";
+                            }
+                        }
+                        document.body.style.cursor = "default";
+                    }
+                }
+            </script>
+
+            <p id="detail"><a href="javascript:getConsent('6bq82utc3d')">Obtain consent from Lena's guardian</a></p>
+            <div id="task_menu" style="display: none">
+                <div class="submenu"><img class="submenu" src="images/icons/physiology.png"/>Recent Tasks</div>
+                <div class="task"><span class="task"
+                                        onclick="startTask('cholesterol'); return false;">Blood Cholesterol</span></div>
+                <div class="task"><span class="task" onclick="startTask('weight'); return false;">Weight</span></div>
+                <div class="task"><span class="task"
+                                        onclick="startTask('bloodpressure'); return false;">Blood Pressure</span></div>
+                <div class="submenu"><img class="submenu" src="images/icons/blood.png"/>Blood Tests</div>
+                <div class="task"><span class="task" onclick="startTask('bloodadrenaline'); return false;">Blood Adrenaline</span>
+                </div>
+                <div class="task"><span class="task" onclick="startTask('aptt'); return false;">Blood APTT</span></div>
+                <div class="task"><span class="task"
+                                        onclick="startTask('cholesterol'); return false;">Blood Cholesterol</span></div>
+                <div class="task"><span class="task"
+                                        onclick="startTask('endorphin'); return false;">Blood Endorphin</span></div>
+                <div class="task"><span class="task"
+                                        onclick="startTask('estrogen'); return false;">Blood Estrogen</span></div>
+                <div class="task"><span class="task" onclick="startTask('ghrelin'); return false;">Blood Ghrelin</span>
+                </div>
+                <div class="task"><span class="task"
+                                        onclick="startTask('bloodglucose'); return false;">Blood Glucose</span></div>
+                <div class="task"><span class="task"
+                                        onclick="startTask('hematocrit'); return false;">Blood Hematocrit</span></div>
+                <div class="task"><span class="task"
+                                        onclick="startTask('melatonin'); return false;">Blood Melatonin</span></div>
+                <div class="task"><span class="task"
+                                        onclick="startTask('oxytocin'); return false;">Blood Oxytocin</span></div>
+                <div class="task"><span class="task"
+                                        onclick="startTask('potassium'); return false;">Blood Potassium</span></div>
+                <div class="task"><span class="task"
+                                        onclick="startTask('serotonin'); return false;">Blood Serotonin</span></div>
+                <div class="task"><span class="task" onclick="startTask('sodium'); return false;">Blood Sodium</span>
+                </div>
+                <div class="task"><span class="task" onclick="startTask('testosterone'); return false;">Blood Testosterone</span>
+                </div>
+                <div class="task"><span class="task" onclick="startTask('bloodtype'); return false;">Blood Type</span>
+                </div>
+                <div class="task"><span class="task" onclick="startTask('vitd'); return false;">Blood Vitamin D</span>
+                </div>
+                <div class="task"><span class="task"
+                                        onclick="startTask('cdz'); return false;">CDZ Lymphocyte Count</span></div>
+                <div class="task"><span class="task" onclick="startTask('genes1'); return false;">Gene Array (Chromosome A)</span>
+                </div>
+                <div class="task"><span class="task" onclick="startTask('genes2'); return false;">Gene Array (Chromosome B)</span>
+                </div>
+                <div class="task"><span class="task"
+                                        onclick="startTask('genes3'); return false;">Gene Array (Combined)</span></div>
+                <div class="task"><span class="task"
+                                        onclick="startTask('wbc'); return false;">White Blood Cell Count</span></div>
+                <div class="submenu"><img class="submenu" src="images/icons/physiology.png"/>Physiology</div>
+                <div class="task"><span class="task"
+                                        onclick="startTask('bloodpressure'); return false;">Blood Pressure</span></div>
+                <div class="task"><span class="task"
+                                        onclick="startTask('temperature'); return false;">Body Temperature</span></div>
+                <div class="task"><span class="task" onclick="startTask('height'); return false;">Height</span></div>
+                <div class="task"><span class="task" onclick="startTask('liver'); return false;">Liver Size</span></div>
+                <div class="task"><span class="task" onclick="startTask('pulse'); return false;">Pulse Meter</span>
+                </div>
+                <div class="task"><span class="task" onclick="startTask('skin'); return false;">Skin Colouration</span>
+                </div>
+                <div class="task"><span class="task" onclick="startTask('sleep'); return false;">Sleep Stage</span>
+                </div>
+                <div class="task"><span class="task" onclick="startTask('weight'); return false;">Weight</span></div>
+                <div class="submenu"><img class="submenu" src="images/icons/misc.png"/>Miscellaneous</div>
+                <div class="task"><span class="task" onclick="startTask('wound'); return false;">Examine Wounds</span>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div id="t4" class="content_tab">
+
+            <p>Lena has not completed any tasks.</p>
+
+        </div>
+
+
+        <div id="t5" class="content_tab">
+
+            <div id="conversation">
+            </div>
+
+            <div id="userinput" style="display: none">
+                <input type="text" id="chatbox" autofocus="autofocus" autocomplete="off" size="40" maxlength="120"
+                       onkeydown="if (event.keyCode == 13) dochat();"/>
+                <button type="submit" style="display: block; margin-top: 10px;" onclick="dochat();">Chat</button>
+            </div>
+
+            <p id="idetail">Lena is unable to chat.</p>
+
+        </div>
+
+        <div id="islander" style="width: 240px; float: right;">
+            <canvas id="skeleton" width="240px" height="800px" style=""></canvas>
+            <canvas id="progress" width="50px" height="100px" style="position: relative; top: -760px;"></canvas>
+
+
+            <p id="about"></p>
+        </div>
+
+
+    </div>
+
+</div>
+<script src="js/splines.js"></script>
+<script src="js/boney-data.js"></script>
+<script src="js/boney.js"></script>
+<script src="js/progress.js"></script>
+<script>
+    var available = 1;
+    if (typeof(Storage) == "undefined") {
+        change_tab('t1');
+    } else if (sessionStorage.getItem(pageid + 'tab') == null) {
+        change_tab('t1');
+    } else {
+        change_tab(sessionStorage.getItem(pageid + 'tab'));
+    }
+
+    var islander = {
+        'blink': 'FE2B',
+        'skincolour': '#815646',
+        'head': 'H4F',
+        'eyecolour': '#2EB453',
+        'bottom': ['T2FS', 'T2FT', 0.0],
+        'bottomcolour': '#5d6f51',
+        'top': ['S1FS', 'S1FT', 0.0],
+        'eyes': 'FE2',
+        'sad': 'M2S',
+        'topcolour': '#e7f1c0',
+        'hr': '0.667',
+        'nose': 'FN11',
+        'skin': ['FS', 'FT', 0.0],
+        'happy': 'M2',
+        'pixels': 146.0,
+        'ears': 'Ears1'
+    };
+    islander['id'] = '6bq82utc3d';
+    islander['name'] = 'Lena';
+    islander['sex'] = 'Female';
+    islander['alive'] = 1;
+    islander['mood'] = 'happy';
+    islander['asleep'] = '1';
+    doAnimate();
+
+</script>
+</body>

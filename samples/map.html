@@ -1,162 +1,101 @@
-<!DOCTYPE html>\n
-<html>\n
-<head>\n
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    \n
-    <link rel="stylesheet" type="text/css" href="islands.css">
-    \n<title>The Islands</title>\n
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="islands.css">
+<title>The Islands</title>
 </head>
-\n
-<body style="background-color: #3A7495">\n\n
-<div id="banner">\n
-    <div id="title">The Islands</div>
-    \n
+<body style="background-color: #3A7495">
+
+<div id="banner">
+<div id="title">The Islands</div>
 </div>
-\n
-<div id="menubar">\n
-    <div id="breadcrumbs"><a href="calendar.php" class="menu">Year 254 &nbsp; Day 13 &nbsp; Summer</a></div>
-    \n
-    <div id="menu"><a href="project.php" class="menu">Contacts</a> &nbsp; &nbsp; <a href="telephone.php"
-                                                                                    class="menu">&phone;</a> &nbsp;
-        &nbsp; <a href="logout.php" class="menu">Logout</a></div>
-    \n
+<div id="menubar">
+<div id="breadcrumbs"><a href="calendar.php" class="menu">Year 254 &nbsp; Day 14 &nbsp; Summer</a></div>
+<div id="menu"><a href="project.php" class="menu">Contacts</a> &nbsp; &nbsp; <a href="telephone.php" class="menu">&phone;</a> &nbsp; &nbsp;  <a href="logout.php" class="menu">Logout</a></div>
 </div>
-\n\n
-<div id="content">\n\n
-    <map name="islands" id="islandsmap">\n
-        <area href="village.php?Hofn" shape="rect" coords="85,170,134,185">
-        \n
-        <area href="village.php?Hofn" shape="circle" coords="145,189,8">
-        \n
-        <area href="village.php?Vardo" shape="rect" coords="259,179,320,195">
-        \n
-        <area href="village.php?Vardo" shape="circle" coords="254,169,8">
-        \n
-        <area href="village.php?Helvig" shape="rect" coords="29,251,94,269">
-        \n
-        <area href="village.php?Helvig" shape="circle" coords="101,273,8">
-        \n
-        <area href="village.php?Bjurholm" shape="rect" coords="274,296,372,313">
-        \n
-        <area href="village.php?Bjurholm" shape="circle" coords="265,315,8">
-        \n
-        <area href="village.php?Blonduos" shape="rect" coords="53,385,152,403">
-        \n
-        <area href="village.php?Blonduos" shape="circle" coords="158,382,8">
-        \n
-        <area href="village.php?Helluland" shape="rect" coords="147,476,253,492">
-        \n
-        <area href="village.php?Helluland" shape="circle" coords="141,474,8">
-        \n\n
-        <area href="village.php?Hayarano" shape="rect" coords="594,311,691,327">
-        \n
-        <area href="village.php?Hayarano" shape="circle" coords="584,330,8">
-        \n
-        <area href="village.php?Akkeshi" shape="rect" coords="630,401,708,416">
-        \n
-        <area href="village.php?Akkeshi" shape="circle" coords="718,421,8">
-        \n
-        <area href="village.php?Reading" shape="rect" coords="804,367,884,384">
-        \n
-        <area href="village.php?Reading" shape="circle" coords="793,388,8">
-        \n
-        <area href="village.php?Nelson" shape="rect" coords="868,427,940,442">
-        \n
-        <area href="village.php?Nelson" shape="circle" coords="860,445,8">
-        \n
-        <area href="village.php?Arcadia" shape="rect" coords="870,595,949,611">
-        \n
-        <area href="village.php?Arcadia" shape="circle" coords="859,616,8">
-        \n
-        <area href="village.php?Kiyobico" shape="rect" coords="603,600,687,615">
-        \n
-        <area href="village.php?Kiyobico" shape="circle" coords="700,619,8">
-        \n
-        <area href="village.php?Takazaki" shape="rect" coords="437,625,525,640">
-        \n
-        <area href="village.php?Takazaki" shape="circle" coords="535,643,8">
-        \n
-        <area href="village.php?Biruwa" shape="rect" coords="512,486,580,502">
-        \n
-        <area href="village.php?Biruwa" shape="circle" coords="502,506,8">
-        \n
-        <area href="village.php?Shinobi" shape="rect" coords="350,521,422,537">
-        \n
-        <area href="village.php?Shinobi" shape="circle" coords="430,540,8">
-        \n\n
-        <area href="village.php?Pauma" shape="rect" coords="438,911,501,928">
-        \n
-        <area href="village.php?Pauma" shape="circle" coords="430,930,8">
-        \n
-        <area href="village.php?Valais" shape="rect" coords="638,1025,700,1040">
-        \n
-        <area href="village.php?Valais" shape="circle" coords="630,1042,8">
-        \n
-        <area href="village.php?Kinsale" shape="rect" coords="476,1125,552,1140">
-        \n
-        <area href="village.php?Kinsale" shape="circle" coords="469,1143,8">
-        \n
-        <area href="village.php?Mahuti" shape="rect" coords="439,1322,505,1337">
-        \n
-        <area href="village.php?Mahuti" shape="circle" coords="430,1315,8">
-        \n
-        <area href="village.php?Eden" shape="rect" coords="115,1380,163,1396">
-        \n
-        <area href="village.php?Eden" shape="circle" coords="173,1378,8">
-        \n
-        <area href="village.php?Vaiku" shape="rect" coords="327,1219,380,1235">
-        \n
-        <area href="village.php?Vaiku" shape="circle" coords="320,1237,8">
-        \n
-        <area href="village.php?Colmar" shape="rect" coords="48,1234,123,1249">
-        \n
-        <area href="village.php?Colmar" shape="circle" coords="134,1227,8">
-        \n
-        <area href="village.php?Gordes" shape="rect" coords="95,1055,169,1069">
-        \n
-        <area href="village.php?Gordes" shape="circle" coords="178,1072,8">
-        \n
-        <area href="village.php?Maeva" shape="rect" coords="244,1067,305,1082">
-        \n
-        <area href="village.php?Maeva" shape="circle" coords="237,1086,8">
-        \n
-        <area href="village.php?Riroua" shape="rect" coords="102,945,169,960">
-        \n
-        <area href="village.php?Riroua" shape="circle" coords="178,964,8">
-        \n
-        <area href="village.php?Nidoma" shape="rect" coords="111,841,180,857">
-        \n
-        <area href="village.php?Nidoma" shape="circle" coords="187,859,8">
-        \n
-        <area href="village.php?Talu" shape="rect" coords="318,845,364,860">
-        \n
-        <area href="village.php?Talu" shape="circle" coords="311,864,8">
-        \n\n
-        <area href="visitors.php" shape="rect" coords="848,669,856,677">
-        \n
-        <area href="visitors.php" shape="rect" coords="862,665,947,678">
-        \n\n
-        <area href="academy.php" shape="rect" coords="255,344,340,358">
-        \n
-        <area href="academy.php" shape="rect" coords="248,333,258,344">
-        \n\n
-        <area href="field.php?1" shape="rect" coords="164,145,173,154">
-        \n
-        <area href="field.php?2" shape="rect" coords="503,535,512,545">
-        \n
-        <area href="field.php?3" shape="rect" coords="338,902,347,911">
-        \n\n
-        <area href="climate.php?1" shape="rect" coords="219,392,227,401">
-        \n
-        <area href="climate.php?2" shape="rect" coords="912,491,922,501">
-        \n
-        <area href="climate.php?3" shape="rect" coords="389,963,399,973">
-        \n
-        <area href="climate.php?4" shape="rect" coords="120,1175,129,1185">
-        \n\n
-    </map>
-    \n\n<img src="images/islands.png" width="1000px" height="1476px"
-             style="display: block; margin-left: auto; margin-right: auto;" usemap="#islands">\n\n
+
+<div id="content">
+
+<map name="islands" id="islandsmap">
+<area href="village.php?Hofn" shape="rect" coords="85,170,134,185">
+<area href="village.php?Hofn" shape="circle" coords="145,189,8">
+<area href="village.php?Vardo" shape="rect" coords="259,179,320,195">
+<area href="village.php?Vardo" shape="circle" coords="254,169,8">
+<area href="village.php?Helvig" shape="rect" coords="29,251,94,269">
+<area href="village.php?Helvig" shape="circle" coords="101,273,8">
+<area href="village.php?Bjurholm" shape="rect" coords="274,296,372,313">
+<area href="village.php?Bjurholm" shape="circle" coords="265,315,8">
+<area href="village.php?Blonduos" shape="rect" coords="53,385,152,403">
+<area href="village.php?Blonduos" shape="circle" coords="158,382,8">
+<area href="village.php?Helluland" shape="rect" coords="147,476,253,492">
+<area href="village.php?Helluland" shape="circle" coords="141,474,8">
+
+<area href="village.php?Hayarano" shape="rect" coords="594,311,691,327">
+<area href="village.php?Hayarano" shape="circle" coords="584,330,8">
+<area href="village.php?Akkeshi" shape="rect" coords="630,401,708,416">
+<area href="village.php?Akkeshi" shape="circle" coords="718,421,8">
+<area href="village.php?Reading" shape="rect" coords="804,367,884,384">
+<area href="village.php?Reading" shape="circle" coords="793,388,8">
+<area href="village.php?Nelson" shape="rect" coords="868,427,940,442">
+<area href="village.php?Nelson" shape="circle" coords="860,445,8">
+<area href="village.php?Arcadia" shape="rect" coords="870,595,949,611">
+<area href="village.php?Arcadia" shape="circle" coords="859,616,8">
+<area href="village.php?Kiyobico" shape="rect" coords="603,600,687,615">
+<area href="village.php?Kiyobico" shape="circle" coords="700,619,8">
+<area href="village.php?Takazaki" shape="rect" coords="437,625,525,640">
+<area href="village.php?Takazaki" shape="circle" coords="535,643,8">
+<area href="village.php?Biruwa" shape="rect" coords="512,486,580,502">
+<area href="village.php?Biruwa" shape="circle" coords="502,506,8">
+<area href="village.php?Shinobi" shape="rect" coords="350,521,422,537">
+<area href="village.php?Shinobi" shape="circle" coords="430,540,8">
+
+<area href="village.php?Pauma" shape="rect" coords="438,911,501,928">
+<area href="village.php?Pauma" shape="circle" coords="430,930,8">
+<area href="village.php?Valais" shape="rect" coords="638,1025,700,1040">
+<area href="village.php?Valais" shape="circle" coords="630,1042,8">
+<area href="village.php?Kinsale" shape="rect" coords="476,1125,552,1140">
+<area href="village.php?Kinsale" shape="circle" coords="469,1143,8">
+<area href="village.php?Mahuti" shape="rect" coords="439,1322,505,1337">
+<area href="village.php?Mahuti" shape="circle" coords="430,1315,8">
+<area href="village.php?Eden" shape="rect" coords="115,1380,163,1396">
+<area href="village.php?Eden" shape="circle" coords="173,1378,8">
+<area href="village.php?Vaiku" shape="rect" coords="327,1219,380,1235">
+<area href="village.php?Vaiku" shape="circle" coords="320,1237,8">
+<area href="village.php?Colmar" shape="rect" coords="48,1234,123,1249">
+<area href="village.php?Colmar" shape="circle" coords="134,1227,8">
+<area href="village.php?Gordes" shape="rect" coords="95,1055,169,1069">
+<area href="village.php?Gordes" shape="circle" coords="178,1072,8">
+<area href="village.php?Maeva" shape="rect" coords="244,1067,305,1082">
+<area href="village.php?Maeva" shape="circle" coords="237,1086,8">
+<area href="village.php?Riroua" shape="rect" coords="102,945,169,960">
+<area href="village.php?Riroua" shape="circle" coords="178,964,8">
+<area href="village.php?Nidoma" shape="rect" coords="111,841,180,857">
+<area href="village.php?Nidoma" shape="circle" coords="187,859,8">
+<area href="village.php?Talu" shape="rect" coords="318,845,364,860">
+<area href="village.php?Talu" shape="circle" coords="311,864,8">
+
+<area href="visitors.php" shape="rect" coords="848,669,856,677">
+<area href="visitors.php" shape="rect" coords="862,665,947,678">
+
+<area href="academy.php" shape="rect" coords="255,344,340,358">
+<area href="academy.php" shape="rect" coords="248,333,258,344">
+
+<area href="field.php?1" shape="rect" coords="164,145,173,154">
+<area href="field.php?2" shape="rect" coords="503,535,512,545">
+<area href="field.php?3" shape="rect" coords="338,902,347,911">
+
+<area href="climate.php?1" shape="rect" coords="219,392,227,401">
+<area href="climate.php?2" shape="rect" coords="912,491,922,501">
+<area href="climate.php?3" shape="rect" coords="389,963,399,973">
+<area href="climate.php?4" shape="rect" coords="120,1175,129,1185">
+
+</map>
+
+<img src="images/islands.png" width="1000px" height="1476px" style="display: block; margin-left: auto; margin-right: auto;" usemap="#islands">
+
 </div>
-\n\n\n
+
+
 </body>
