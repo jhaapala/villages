@@ -1,7 +1,8 @@
 import unittest
 from parser import Parser
 
-class TestStringMethods(unittest.TestCase):
+
+class TestParser(unittest.TestCase):
 
     def test_parse_hall(self) :
         parser = Parser()
@@ -20,8 +21,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(result[0], "http://theislands.umn.edu/islander.php?id=u33fmnhctv")
         self.assertEqual(result[len(result) - 1], "http://theislands.umn.edu/islander.php?id=h29qhex99t")
 
-
-    def test_parse_villager_summary(self) :
+    def test_parse_villager_summary_dead(self) :
         parser = Parser()
         with open('samples/villagerDead.html', 'r') as hall:
             data = hall.read()
@@ -32,6 +32,30 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(result['died_year'], "117")
         self.assertEqual(result['address'], "")
 
+    def test_parse_villager_summary_alive(self) :
+        parser = Parser()
+        with open('samples/villagerAlive.html', 'r') as hall:
+            data = hall.read()
+        result = parser.extract_villager_summary(data)
+        self.assertEqual(result['name'], "Lena Sorensen")
+        self.assertEqual(result['sex'], "Female")
+        self.assertEqual(result['age'], "0")
+        self.assertEqual(result['died_year'], "")
+        self.assertEqual(result['address'], "Hofn 165")
+
+    def test_extract_villager_story(self):
+        parser = Parser()
+        with open('samples/villagerDead.html', 'r') as myfile:
+            data = myfile.read()
+        result = parser.extract_villager_story("vId", data)
+        self.assertEqual(len(result), 51)
+        self.assertEqual(result[0]["id"], "vId")
+        self.assertEqual(result[0]["storyday"], "04/002")
+        self.assertEqual(result[0]["storyevent"], "Born in Hofn 30")
+
+        self.assertEqual(result[1]["id"], "vId")
+        self.assertEqual(result[1]["storyday"], "24/005")
+        self.assertEqual(result[1]["storyevent"], "Friends with dmp2hccsfg")
 
 
 if __name__ == '__main__':

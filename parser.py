@@ -1,4 +1,6 @@
 from lxml import html
+
+
 class Parser:
 
     #domain = "http://theislands.umn.edu/"
@@ -35,5 +37,27 @@ class Parser:
         address = ""
         if 'Died' in alive_or_dead :
             died_year = alive_or_dead.replace('Died in Year ','')
-
+        if 'Lives' in alive_or_dead:
+            address = alive_or_dead.replace('Lives in ','')
         return {"name": name, "sex": sex, "age": age, "died_year": died_year, "address": address}
+
+
+    def extract_villager_story(self, villagerId, htmlContent):
+        # "id": "", "storyday": "", "storyevent": ""
+        id = villagerId
+        tree = html.fromstring(htmlContent)
+        events = tree.xpath("//div[@id='t2']/div[@class='timelineevent']")
+        storyevents = []
+        for items in events:
+            storyday = items.xpath("./div[@class='storyevent']/div[@class='storyday']")[0].text_content()
+            storyevent = items.xpath("./div[@class='storyevent']/text()[last()]")[0].strip()
+            storylink = ""
+            try:
+                storylink = items.xpath("./div[@class='storyevent']/a")[0].attrib["href"].replace("islander.php?id="," ")
+            except Exception:
+                pass
+            storyevent = storyevent + storylink
+            story = {"id": id, "storyday": storyday, "storyevent": storyevent}
+            storyevents.append(story)
+        return storyevents
+
