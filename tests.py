@@ -57,6 +57,13 @@ class TestParser(unittest.TestCase):
         self.assertEqual(result[1]["storyday"], "24/005")
         self.assertEqual(result[1]["storyevent"], "Friends with dmp2hccsfg")
 
+        self.assertEqual(result[6]["id"], "vId")
+        self.assertEqual(result[6]["storyday"], "04/011")
+        self.assertEqual(result[6]["storyevent"], "No longer friends with dmp2hccsfg")
+
+        self.assertEqual(result[7]["id"], "vId")
+        self.assertEqual(result[7]["storyday"], "18/011")
+        self.assertEqual(result[7]["storyevent"], "Friends with dmp2hccsfg")
 
 if __name__ == '__main__':
     unittest.main()
