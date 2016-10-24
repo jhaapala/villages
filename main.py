@@ -1,23 +1,42 @@
 import requests
 from lxml import html
-import re
+from parser import Parser
+from csvcreator import CsvCreator
+import time
 
-
-domain = ""
+parser = Parser()
 payload = {'email': '', 'word': '' }
 url = ""
 sess = requests.session()
 r = sess.post(url, data=payload)
 tree = html.fromstring(r.content)
-links = tree.xpath("//area[@shape='circle']/@href")
-hrefs = []
-for village in links:
-    href = domain + village
-    print href
-    hrefs.append(href)
-personsHref = []
-for x in range(0, 1) :
-    villagePage = sess.get(hrefs[x])
-    vId = villagePage.content.split("house.php?v=")[1].split("&h=")[0]
-    houseids = html.fromstring(villagePage.content).xpath("//div[@class='houseid']/text()")
+hallLinks = parser.extract_hall_links(r.content)
+print( "We found " + str(len(hallLinks)) + " halls.")
+villagerHrefs = []
+start = time.time()
+for hall in hallLinks:
+    print( "Extracting births from " +  hall + " hall.")
+    try :
+        villagerHrefs.extend(parser.extract_hall_births(sess.get(hall).content))
+        print("New total villager birth count: " + str(len(villagerHrefs)))
+    except Exception :
+        print("Somthing happened getting hall " + hall)
+end = time.time()
+print("Analyzed hall births in " + str((end - start)))
 
+start = time.time()
+summaries = []
+for villager in villagerHrefs :
+# for x in range(0, 5) :
+    print("Getting summary from " + villager)
+    vId = villager.replace('http://theislands.umn.edu/islander.php?id=', '')
+    summary = parser.extract_villager_story(vId, sess.get(villager).content)
+    print("Summary for " + vId + " " + str(summary))
+    summaries.extend(summary)
+end = time.time()
+print("Analyzed villager summaries in " + str((end - start)))
+
+summariesCsv = "full-summaries.csv"
+print("Creating csv file " + summariesCsv)
+csvCreator = CsvCreator(summariesCsv, ['id', 'storyday', 'storyevent'])
+csvCreator.output_dict_to_csv(summaries)
