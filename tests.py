@@ -26,6 +26,7 @@ class TestParser(unittest.TestCase):
         with open('samples/villagerDead.html', 'r') as hall:
             data = hall.read()
         result = parser.extract_villager_summary(data)
+        self.assertEqual(result["id"], "vId")
         self.assertEqual(result['name'], "Agda Holst")
         self.assertEqual(result['sex'], "Female")
         self.assertEqual(result['age'], "115")
@@ -36,7 +37,8 @@ class TestParser(unittest.TestCase):
         parser = Parser()
         with open('samples/villagerAlive.html', 'r') as hall:
             data = hall.read()
-        result = parser.extract_villager_summary(data)
+        result = parser.extract_villager_summary("vId", data)
+        self.assertEqual(result["id"], "vId")
         self.assertEqual(result['name'], "Lena Sorensen")
         self.assertEqual(result['sex'], "Female")
         self.assertEqual(result['age'], "0")

@@ -26,7 +26,8 @@ class Parser:
             hrefs.append(href)
         return hrefs
 
-    def extract_villager_summary(self, htmlContent):
+    def extract_villager_summary(self, villagerId, htmlContent):
+        id = villagerId
         tree = html.fromstring(htmlContent)
         name = tree.xpath("//div[@id='title']")[0].text_content()
         storylist = tree.xpath("//div[@id='t1']/div[@class='storyevent' and not(@id)]")
@@ -39,8 +40,7 @@ class Parser:
             died_year = alive_or_dead.replace('Died in Year ','')
         if 'Lives' in alive_or_dead:
             address = alive_or_dead.replace('Lives in ','')
-        return {"name": name, "sex": sex, "age": age, "died_year": died_year, "address": address}
-
+        return {"id": id, "name": name, "sex": sex, "age": age, "died_year": died_year, "address": address}
 
     def extract_villager_story(self, villagerId, htmlContent):
         # "id": "", "storyday": "", "storyevent": ""
