@@ -50,22 +50,30 @@ class TestParser(unittest.TestCase):
         with open('samples/villagerDead.html', 'r') as myfile:
             data = myfile.read()
         result = parser.extract_villager_story("vId", data)
-        self.assertEqual(len(result), 51)
+        self.assertEqual(len(result), 94)
         self.assertEqual(result[0]["id"], "vId")
         self.assertEqual(result[0]["storyday"], "04/002")
         self.assertEqual(result[0]["storyevent"], "Born in Hofn 30")
 
         self.assertEqual(result[1]["id"], "vId")
         self.assertEqual(result[1]["storyday"], "24/005")
-        self.assertEqual(result[1]["storyevent"], "Friends with dmp2hccsfg")
+        self.assertEqual(result[1]["storyevent"], "Friends with") #dmp2hccsfg
 
         self.assertEqual(result[6]["id"], "vId")
         self.assertEqual(result[6]["storyday"], "04/011")
-        self.assertEqual(result[6]["storyevent"], "No longer friends with dmp2hccsfg")
+        self.assertEqual(result[6]["storyevent"], "No longer friends with") #dmp2hccsfg
 
         self.assertEqual(result[7]["id"], "vId")
         self.assertEqual(result[7]["storyday"], "18/011")
-        self.assertEqual(result[7]["storyevent"], "Friends with dmp2hccsfg")
+        self.assertEqual(result[7]["storyevent"], "Friends with") #dmp2hccsfg
+
+        self.assertEqual(result[8]["id"], "vId")
+        self.assertEqual(result[8]["storyday"], "15/013")
+        self.assertEqual(result[8]["storyevent"], "Father died")
+
+        self.assertEqual(result[9]["id"], "vId")
+        self.assertEqual(result[9]["storyday"], "15/013")
+        self.assertEqual(result[9]["storyevent"], "Adopted by") #57dv4c63al
 
 if __name__ == '__main__':
     unittest.main()

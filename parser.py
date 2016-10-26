@@ -49,15 +49,11 @@ class Parser:
         events = tree.xpath("//div[@id='t2']/div[@class='timelineevent']")
         storyevents = []
         for items in events:
-            storyday = items.xpath("./div[@class='storyevent']/div[@class='storyday']")[0].text_content()
-            storyevent = items.xpath("./div[@class='storyevent']/text()[last()]")[0].strip()
-            storylink = ""
-            try:
-                storylink = items.xpath("./div[@class='storyevent']/a")[0].attrib["href"].replace("islander.php?id="," ")
-            except Exception:
-                pass
-            storyevent = storyevent + storylink
-            story = {"id": id, "storyday": storyday, "storyevent": storyevent}
-            storyevents.append(story)
+            for i in range(0,len(items)-1):
+                storyday = items.xpath("./div[@class='storyevent']/div[@class='storyday']")[i].text_content()
+                storyevent = items.xpath("./div[@class='storyevent']/text()[last()]")[i].strip()
+                #storylink = items.xpath("./div[@class='storyevent']/a")[j].attrib["href"].replace("islander.php?id=", " ")
+                #storyevent = storyevent + storylink
+                story = {"id": id, "storyday": storyday, "storyevent": storyevent}
+                storyevents.append(story)
         return storyevents
-
