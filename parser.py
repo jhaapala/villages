@@ -3,9 +3,7 @@ from lxml import html
 
 class Parser:
 
-    #domain = "http://theislands.umn.edu/"
 
-    #[{"name": "", "url":""}]
     def extract_hall_births(self, htmlContent):
         tree = html.fromstring(htmlContent)
         links = tree.xpath("//div[@id='t2']/table/tr/td/a/@href")
@@ -33,14 +31,21 @@ class Parser:
         storylist = tree.xpath("//div[@id='t1']/div[@class='storyevent' and not(@id)]")
         sex = storylist[0].text_content()
         age = storylist[1].text_content().replace(" years old", "")
-        alive_or_dead = storylist[2].text_content()
+        alive_or_dead_or_job = storylist[2].text_content()
         died_year = ""
         address = ""
-        if 'Died' in alive_or_dead :
-            died_year = alive_or_dead.replace('Died in Year ','')
-        if 'Lives' in alive_or_dead:
-            address = alive_or_dead.replace('Lives in ','')
-        return {"id": id, "name": name, "sex": sex, "age": age, "died_year": died_year, "address": address}
+        job = ""
+        if 'Died' in alive_or_dead_or_job :
+            died_year = alive_or_dead_or_job.replace('Died in Year ','')
+        elif 'Lives' in alive_or_dead_or_job:
+            address = alive_or_dead_or_job.replace('Lives in ','')
+        else: job = alive_or_dead_or_job
+        alive_or_dead_or_job2 = storylist[3].text_content()
+        if 'Died' in alive_or_dead_or_job2 :
+            died_year = alive_or_dead_or_job2.replace('Died in Year ','')
+        elif 'Lives' in alive_or_dead_or_job2:
+            address = alive_or_dead_or_job2.replace('Lives in ','')
+        return {"id": id, "name": name, "sex": sex, "age": age, "died_year": died_year, "address": address, "job": job}
 
     def extract_villager_story(self, villagerId, htmlContent):
         # "id": "", "storyday": "", "storyevent": ""
@@ -52,8 +57,6 @@ class Parser:
             for i in range(0,len(items)-1):
                 storyday = items.xpath("./div[@class='storyevent']/div[@class='storyday']")[i].text_content()
                 storyevent = items.xpath("./div[@class='storyevent']/text()[last()]")[i].strip()
-                #storylink = items.xpath("./div[@class='storyevent']/a")[j].attrib["href"].replace("islander.php?id=", " ")
-                #storyevent = storyevent + storylink
                 story = {"id": id, "storyday": storyday, "storyevent": storyevent}
                 storyevents.append(story)
         return storyevents

@@ -28,7 +28,7 @@ print("Analyzed hall births in " + str((end - start)))
 start = time.time()
 stories = []
 for villager in villagerHrefs :
-#for x in range(0, 1000) :
+#for x in range(0, 5373) :
     print("Getting story from " + villager)
     vId = villager.replace('http://theislands.umn.edu/islander.php?id=', '')
     for i in range(0,3) :
@@ -45,7 +45,7 @@ for villager in villagerHrefs :
 end = time.time()
 print("Analyzed villager summaries in " + str((end - start)))
 
-storiesCsv = "full_stories.csv"
+storiesCsv = "full_stories_new.csv"
 print("Creating csv file " + storiesCsv)
 csvCreator = CsvCreator(storiesCsv, ['id', 'storyday', 'storyevent'])
 csvCreator.output_dict_to_csv(stories)
@@ -71,7 +71,7 @@ for villager in villagerHrefs :
 end = time.time()
 print("Analyzed villager summaries in " + str((end - start)))
 
-summariesCsv = "full_summaries.csv"
+summariesCsv = "full_summaries_new.csv"
 print("Creating csv file " + summariesCsv)
-csvCreator = CsvCreator(summariesCsv, ['id', 'name', 'sex', 'age', 'died_year', 'address'])
+csvCreator = CsvCreator(summariesCsv, ['id', 'name', 'sex', 'age', 'died_year', 'address', 'job'])
 csvCreator.output_dict_to_csv(summaries)
